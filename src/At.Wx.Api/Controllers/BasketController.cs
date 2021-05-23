@@ -17,9 +17,10 @@ namespace At.Wx.Api.Controllers
             _productServices = productServices;
         }
         [HttpGet("~/api/sort")]
-        public async Task<ActionResult<IEnumerable<Product>>> Get()
+        public async Task<ActionResult<IEnumerable<Product>>> Get([FromQuery]SortOption sortOption)
         {
-            var result = await _productServices.GetProduct();
+
+            var result = await _productServices.GetProduct(sortOption);
             return Ok(result);
         }
     }

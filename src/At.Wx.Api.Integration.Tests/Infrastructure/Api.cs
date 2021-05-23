@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
 
 namespace At.Wx.Api.Integration.Tests.Infrastructure
 {
