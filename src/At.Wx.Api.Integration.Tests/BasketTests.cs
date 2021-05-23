@@ -20,12 +20,12 @@ namespace At.Wx.Api.Integration.Tests
 
         private readonly List<Product> _productApiStub = new List<Product>
         {
-            new Product {Name = "Product 4", Price = 100.5m, Quantity = 9},
-            new Product {Name = "Product 6", Price = 102.5m, Quantity = 7},
-            new Product {Name = "Product 3", Price = 10.5m, Quantity = 2},
-            new Product {Name = "Product 5", Price = 99.3m, Quantity = 1},
-            new Product {Name = "Product 1", Price = 12.15m, Quantity = 3},
-            new Product {Name = "Product 2", Price = 101.7m, Quantity = 3},
+            new Product {Name = "Product 4", Price = 100.5m},
+            new Product {Name = "Product 6", Price = 102.5m},
+            new Product {Name = "Product 3", Price = 10.5m},
+            new Product {Name = "Product 5", Price = 99.3m},
+            new Product {Name = "Product 1", Price = 12.15m},
+            new Product {Name = "Product 2", Price = 101.7m},
         };
         [Fact]
         public async Task Given_A_Call_To_Sort_Endpoint_It_Should_Return_200_Ok()
@@ -67,6 +67,7 @@ namespace At.Wx.Api.Integration.Tests
                 SortOption.High => products.OrderByDescending(x => x.Price),
                 SortOption.Ascending => products.OrderBy(x => x.Name),
                 SortOption.Descending => products.OrderByDescending(x => x.Name),
+                SortOption.Recommended => products.OrderByDescending(x=>x.Quantity)
             };
         }
 
@@ -86,6 +87,17 @@ namespace At.Wx.Api.Integration.Tests
             actualResponse.Should().NotBeNull();
             actualResponse.Should().BeEquivalentTo(_productApiStub.OrderBy(x => x.Price), options => options.WithStrictOrdering());
         }
+
+        [Fact]
+        public async Task Given_A_Call_To_Sort_Endpoint_With_SortOption_Recommended_It_Should_Return_SortedProductList()
+        {
+            using var testContext = new TestContext(_outputHelper).Start();
+            var response = await testContext.Client.GetAsync(SortUrl + $"?sortOption=Recommended");
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            var actualResponse = await response.Content.ReadAsAsync<IEnumerable<Product>>();
+            actualResponse.Should().NotBeNull();
+        }
+
         [Fact]
         public async Task Given_A_Call_To_Sort_Endpoint_With_SortOption_Unknown_Should_Return_BadRequest()
         {

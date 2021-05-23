@@ -15,22 +15,27 @@ namespace At.Wx.Api.Integration.Tests.Infrastructure
         public int ApiPort { get; }
         private readonly CancellationTokenSource _apiCancellationTokenSource;
 
-        public Api(string testName, ResourceApiHost resourceApiHost)
+        public Api(string testName, ResourceApiHost resourceApiHost=null)
         {
             _testName = testName;
             ApiPort = PortHelper.GetNextAvailablePort();
             var args = new[] { "--urls", $"http://0.0.0.0:{ApiPort}", "--environment", "Development" }; //DevSkim: ignore DS137138 
             _apiCancellationTokenSource = new CancellationTokenSource();
+            var testEnvironmentVariable = new Dictionary<string, string>
+            {
+                ["Logging:LogLevel:Default"] = "Information",
+                ["Logging:LogLevel:Microsoft"] = "Warning",
+                ["Logging:LogLevel:Microsoft.Hosting.Lifetime"] = "Information",
+                
+            };
+
+            if (resourceApiHost!=null)
+                testEnvironmentVariable.Add("WoolliesTestBaseUrl",  resourceApiHost.BaseUrl);
+
             Program.CreateHostBuilder(args)
                 .ConfigureAppConfiguration((context, configuration) =>
                 {
-                    configuration.AddInMemoryCollection(new Dictionary<string, string>
-                    {
-                        ["Logging:LogLevel:Default"] = "Information",
-                        ["Logging:LogLevel:Microsoft"] = "Warning",
-                        ["Logging:LogLevel:Microsoft.Hosting.Lifetime"] = "Information",
-                        ["WoolliesTestBaseUrl"]=resourceApiHost.BaseUrl
-                    });
+                    configuration.AddInMemoryCollection(testEnvironmentVariable);
                 })
                 .Build()
                 .RunAsync(_apiCancellationTokenSource.Token);

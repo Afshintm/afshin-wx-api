@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace At.Wx.Api.Integration.Tests.Infrastructure
 {
-    public class ResourceApiHost:ApiHostBase
+    public class ResourceApiHost: ApiHostBase
     {
         public string BaseUrl { get; private set; }
         public override void Start()

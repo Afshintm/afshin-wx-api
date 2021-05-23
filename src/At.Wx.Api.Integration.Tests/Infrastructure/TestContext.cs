@@ -20,14 +20,17 @@ namespace At.Wx.Api.Integration.Tests.Infrastructure
 
         public TestContext(ITestOutputHelper outputHelper, Action<ResourceApiHost> resourceApiConfigurator = null)
         {
-            ResourceApiHost = new ResourceApiHost();
+            
             _testName = GetTestName();
             OutputHelpers[_testName] = outputHelper;
+
+            if (resourceApiConfigurator!=null)
+                ResourceApiHost = new ResourceApiHost();
             resourceApiConfigurator?.Invoke(ResourceApiHost);
         }
         public TestContext Start()
         {
-            ResourceApiHost.Start();
+            ResourceApiHost?.Start();
             _api = new Api(_testName,ResourceApiHost);
             Client = _api.Client;
             return this;
@@ -38,7 +41,7 @@ namespace At.Wx.Api.Integration.Tests.Infrastructure
         public void Dispose()
         {
             _api?.Dispose();
-            ResourceApiHost.Dispose();
+            ResourceApiHost?.Dispose();
         }
         private static string GetTestName()
         {
