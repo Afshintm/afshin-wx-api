@@ -1,9 +1,11 @@
 using At.Wx.Api.Infrastructure;
+using At.Wx.Api.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace At.Wx.Api
 {
@@ -22,6 +24,14 @@ namespace At.Wx.Api
             var apiConfig = new ApiConfig();
             Configuration.Bind("ApiConfig",apiConfig);
             services.AddSingleton(apiConfig);
+            services.AddTransient<ProductServices>();
+
+            services.AddHttpClient<ProductClient>(client =>
+                {
+                    client.BaseAddress = new Uri(Configuration["WoolliesTestBaseUrl"]);
+                })
+                .AddHttpMessageHandler(provider => new TokenEnricher(apiConfig));
+
             services.AddControllers();
         }
 
