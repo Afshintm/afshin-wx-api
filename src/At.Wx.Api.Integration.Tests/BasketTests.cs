@@ -86,6 +86,28 @@ namespace At.Wx.Api.Integration.Tests
             actualResponse.Should().NotBeNull();
             actualResponse.Should().BeEquivalentTo(_productApiStub.OrderBy(x => x.Price), options => options.WithStrictOrdering());
         }
+        [Fact]
+        public async Task Given_A_Call_To_Sort_Endpoint_With_SortOption_Unknown_Should_Return_BadRequest()
+        {
+            using var testContext = new TestContext(_outputHelper,c=>c.SetupGetProductsEndpoint(HttpStatusCode.OK, _productApiStub)).Start();
+            var response = await testContext.Client.GetAsync(SortUrl + $"?sortOption=Unknown");
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+        [Fact]
+        public async Task Given_Resource_Product_EndPoint_Returns_NotFound_A_Call_To_Sort_Endpoint_Returns_NotFound()
+        {
+            using var testContext = new TestContext(_outputHelper, c => c.SetupGetProductsEndpoint(HttpStatusCode.NotFound, null)).Start();
+            var response = await testContext.Client.GetAsync(SortUrl + $"?sortOption=Low");
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task Given_Resource_Product_EndPoint_Returns_InternalServerError_A_Call_To_Sort_Endpoint_Returns_InternalServerError()
+        {
+            using var testContext = new TestContext(_outputHelper, c => c.SetupGetProductsEndpoint(HttpStatusCode.InternalServerError, null)).Start();
+            var response = await testContext.Client.GetAsync(SortUrl + $"?sortOption=Low");
+            response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        }
 
     }
 }

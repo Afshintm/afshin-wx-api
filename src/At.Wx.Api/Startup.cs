@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using At.Wx.Api.Extensions;
 
 namespace At.Wx.Api
 {
@@ -42,6 +43,7 @@ namespace At.Wx.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.ConfigureCustomExceptionMiddleware();
 
             app.UseHttpsRedirection();
 
