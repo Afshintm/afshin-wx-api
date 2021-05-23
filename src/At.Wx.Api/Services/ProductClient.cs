@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -37,6 +38,21 @@ namespace At.Wx.Api.Services
             response.EnsureSuccessStatusCode();
 
             var result = await response.Content.ReadAsAsync<IEnumerable<Basket>>();
+            return result;
+        }
+
+        public async Task<decimal> PostTrolleyCalculator(Trolley trolley)
+        {
+            var response = await _httpClient.PostAsJsonAsync($"api/resource/trolleyCalculator", trolley);
+
+            if (response.StatusCode == HttpStatusCode.InternalServerError)
+                throw new HttpStatusCodeException(response.StatusCode,
+                    $"Product endpoint returns{response.StatusCode}");
+
+            response.EnsureSuccessStatusCode();
+
+            var str = await response.Content.ReadAsAsync<string>();
+            decimal.TryParse(str, out var result);
             return result;
         }
     }

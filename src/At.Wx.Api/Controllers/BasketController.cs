@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using At.Wx.Api.Models;
 using At.Wx.Api.Services;
@@ -22,6 +23,13 @@ namespace At.Wx.Api.Controllers
 
             var result = await _productServices.GetProduct(sortOption);
             return Ok(result);
+        }
+        
+        [HttpPost("~/api/trolleyTotal")]
+        public async Task<decimal> Post([FromBody]Trolley trolley)
+        {
+            var result = await _productServices.CalculateTrolley(trolley);
+            return result;
         }
     }
 }

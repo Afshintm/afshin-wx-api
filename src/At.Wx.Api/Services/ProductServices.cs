@@ -54,5 +54,12 @@ namespace At.Wx.Api.Services
                 }).OrderByDescending(i=>i.Quantity).AsEnumerable();
             return products;
         }
+
+        public async Task<decimal> CalculateTrolley(Trolley trolly)
+        {
+           var result =  await _productClient.PostTrolleyCalculator(trolly);
+           return result;
+
+        }
     }
 }
