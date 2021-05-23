@@ -26,17 +26,17 @@ namespace At.Wx.Api.Services
 
         public async Task<IEnumerable<Product>> GetProduct(SortOption sortOption= SortOption.Low)
         {
-            var result = await _productClient.GetProducts();
-            var result1 = sortOption switch
+            var products = await _productClient.GetProducts();
+            var result = sortOption switch
             {
-                SortOption.Low => result.OrderBy(x=>x.Price),
-                SortOption.High => result.OrderByDescending(x => x.Price),
-                SortOption.Ascending => result.OrderBy(x => x.Name),
-                SortOption.Descending => result.OrderByDescending(x => x.Name),
+                SortOption.Low => products.OrderBy(x=>x.Price),
+                SortOption.High => products.OrderByDescending(x => x.Price),
+                SortOption.Ascending => products.OrderBy(x => x.Name),
+                SortOption.Descending => products.OrderByDescending(x => x.Name),
                 SortOption.Recommended => throw new NotImplementedException(nameof(sortOption)),
                 _ => throw new ArgumentOutOfRangeException(nameof(sortOption), sortOption, null)
             };
-            return result1;
+            return result;
         }
     }
 }

@@ -15,7 +15,7 @@ namespace At.Wx.Api.Integration.Tests.Infrastructure
         public int ApiPort { get; }
         private readonly CancellationTokenSource _apiCancellationTokenSource;
 
-        public Api(string testName)
+        public Api(string testName, ResourceApiHost resourceApiHost)
         {
             _testName = testName;
             ApiPort = PortHelper.GetNextAvailablePort();
@@ -28,7 +28,8 @@ namespace At.Wx.Api.Integration.Tests.Infrastructure
                     {
                         ["Logging:LogLevel:Default"] = "Information",
                         ["Logging:LogLevel:Microsoft"] = "Warning",
-                        ["Logging:LogLevel:Microsoft.Hosting.Lifetime"] = "Information"
+                        ["Logging:LogLevel:Microsoft.Hosting.Lifetime"] = "Information",
+                        ["WoolliesTestBaseUrl"]=resourceApiHost.BaseUrl
                     });
                 })
                 .Build()
