@@ -6,15 +6,7 @@ using At.Wx.Api.Models;
 
 namespace At.Wx.Api.Services
 {
-    public enum SortOption
-    {
-        Low,
-        High,
-        Ascending,
-        Descending,
-        Recommended
-    }
-
+    
     public class ProductServices
     {
         private readonly ProductClient _productClient;
