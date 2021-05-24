@@ -15,12 +15,12 @@ namespace At.Wx.Api.Integration.Tests.Infrastructure
             BaseUrl = $"http://localhost:{_port}/"; //DevSkim: ignore DS137138 
         }
 
-        public void SetupGetProductsEndpoint(HttpStatusCode status, object response)
+        public void SetupGetApiResourceEndpoint(string path, HttpStatusCode status, object response)
         {
             BuilderConfigurations.Add(builder =>
             {
                 builder.MapWhen(
-                    context => context.Request.Path.StartsWithSegments("/api/resource/products")
+                    context => context.Request.Path.StartsWithSegments($"/api/resource/{path}")
                                && context.Request.Method == HttpMethods.Get,
                     app => app.Run(async ctx =>
                         await HandleRequest(ctx, status, response)));
