@@ -63,3 +63,5 @@ Post `https://localhost:5091/api/trolleyTotal`
 ### See it in action: following link is deployed to AWS Ecs
 
 http://atwxapi-1471568992.ap-southeast-2.elb.amazonaws.com/api/sort
+
+http://atwxapi-1471568992.ap-southeast-2.elb.amazonaws.com/swagger/index.html

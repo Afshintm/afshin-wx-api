@@ -12,6 +12,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using At.Wx.Api.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Models;
 
 namespace At.Wx.Api
 {
@@ -42,7 +43,7 @@ namespace At.Wx.Api
                 })
                 .AddHttpMessageHandler(provider => new TokenEnricher(apiConfig));
 
-            //services.AddControllers();
+            
             services.AddControllers(options =>
                 {
                     options.Filters.Add(new ProducesAttribute(MediaTypeNames.Application.Json));
@@ -66,6 +67,11 @@ namespace At.Wx.Api
                         builder.AllowAnyMethod();
                     });
             });
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "At.Wx.Api", Version = "v1" });
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -76,6 +82,9 @@ namespace At.Wx.Api
                 app.UseDeveloperExceptionPage();
             }
             app.ConfigureCustomExceptionMiddleware();
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "At.Wx.Api v1"));
+
 
             app.UseHttpsRedirection();
 
