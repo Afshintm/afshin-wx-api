@@ -4,6 +4,10 @@
 
 This is a .net core 3.1 webapi to submit the WooliesX Technical test excercise
 
+### Api endpoint to run the tests
+
+http://atwxapi-1471568992.ap-southeast-2.elb.amazonaws.com/api
+
 ### Project structure
 
 1- Web Api
@@ -60,8 +64,12 @@ If you donot pass any sort options Low will be the default
 
 Post `https://localhost:5091/api/trolleyTotal`
 
-### See it in action: following link is deployed to AWS Ecs
+### See it in action: The original api link is deployed to AWS Ecs
 
-http://atwxapi-1471568992.ap-southeast-2.elb.amazonaws.com/api/sort
+http://atwxapi-1471568992.ap-southeast-2.elb.amazonaws.com/api
+
+### Swagger and sort endpoints
 
 http://atwxapi-1471568992.ap-southeast-2.elb.amazonaws.com/swagger/index.html
+
+http://atwxapi-1471568992.ap-southeast-2.elb.amazonaws.com/api/sort
