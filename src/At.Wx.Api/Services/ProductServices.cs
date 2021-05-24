@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using At.Wx.Api.Models;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Newtonsoft.Json;
 
 namespace At.Wx.Api.Services
 {
@@ -35,24 +33,34 @@ namespace At.Wx.Api.Services
                 SortOption.High => products.OrderByDescending(x => x.Price),
                 SortOption.Ascending => products.OrderBy(x => x.Name),
                 SortOption.Descending => products.OrderByDescending(x => x.Name),
-                //SortOption.Recommended => await GetRecommendedOrder(),
-                SortOption.Recommended => (await GetRecommendedOrder())?.Select(i=>products.FirstOrDefault(x=>x.Name==i.Name)),
+                SortOption.Recommended => await GetRecommendedOrder(products),
                 _ => throw new ArgumentOutOfRangeException(nameof(sortOption), sortOption, null)
             };
             return result;
         }
 
-        private async Task<IEnumerable<Product>> GetRecommendedOrder()
+        private async Task<IEnumerable<Product>> GetRecommendedOrder(IEnumerable<Product> products)
         {
-            var result = await _productClient.GetShopperHistory();
-            var products = result.SelectMany(x => x.Products, (x, p) => p)
-                .GroupBy(x => x.Name)
-                .Select(x=> new Product
+            products = products.ToList();
+            var shopperHistory = await _productClient.GetShopperHistory();
+            var flatten = shopperHistory.SelectMany(x => x.Products, (x, p) => p);
+
+            var grouped = flatten.GroupBy(x => x.Name)
+                .Select(x => new Product()
                 {
                     Name = x.Key,
-                    Quantity = x.Sum(y=>y.Quantity),
-                }).OrderByDescending(i=>i.Quantity).AsEnumerable();
-            return products;
+                    Quantity = (int)x.Count() * x.Sum(y => y.Quantity)
+                }).OrderByDescending(i => i.Quantity);
+
+            var joined = grouped.Join(products, g => g.Name, p => p.Name,(g,p)=>new Product()
+            {
+                Name = g.Name,
+                Price = p.Price,
+                Quantity = g.Quantity
+            });
+            var rest = products.Where(i => joined.All(x => x.Name != i.Name));
+            var result = joined.Concat(rest);
+            return result;
         }
 
         public async Task<decimal> CalculateTrolley(Trolley trolly)
