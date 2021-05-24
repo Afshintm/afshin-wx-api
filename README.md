@@ -8,6 +8,8 @@ This is a .net core 3.1 webapi to submit the WooliesX Technical test excercise
 
 http://atwxapi-1471568992.ap-southeast-2.elb.amazonaws.com/api
 
+http://atwxapi-1471568992.ap-southeast-2.elb.amazonaws.com/health
+
 ### Project structure
 
 1- Web Api
